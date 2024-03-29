@@ -4,7 +4,7 @@
 HT16K33 I2C Library
 --------------------------------------------------------------------------
 License:   
-Copyright 2018-2024 <NAME>
+Copyright 2018-2022 Erik Welsh
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:
@@ -157,7 +157,6 @@ HT16K33_MAX_VALUE           = 9999
 # ------------------------------------------------------------------------
 class HT16K33():
     """ Class to manage a HT16K33 I2C display """
-    # Class variables
     bus     = None
     address = None
     command = None
@@ -166,27 +165,27 @@ class HT16K33():
         """ Initialize class variables; Set up display; Set display to blank """
         
         # Initialize class variables
-        print("HT16K33:")
-        print("    Bus     = {0}".format(bus))
-        print("    Address = 0x{0:x}".format(address))
+        self.bus     = bus
+        self.address = address
+        self.command = "/usr/sbin/i2cset -y {0} {1}".format(bus, address)
 
         # Set up display        
+        self.setup(blink, brightness)
         
         # Set display to blank
-            
+        self.blank()
+    
     # End def
     
-    def _setup(self, blink, brightness):
+    
+    def setup(self, blink, brightness):
         """Initialize the display itself"""
-        if self.command:
-            # i2cset -y 1 0x70 0x21
-            os.system("{0} {1}".format(self.command, (HT16K33_SYSTEM_SETUP | HT16K33_OSCILLATOR)))
-            # i2cset -y 1 0x70 0x81
-            os.system("{0} {1}".format(self.command, (HT16K33_BLINK_CMD | blink | HT16K33_BLINK_DISPLAYON)))
-            # i2cset -y 1 0x70 0xEF
-            os.system("{0} {1}".format(self.command, (HT16K33_BRIGHTNESS_CMD | brightness)))
-        else:
-            print("HT16K33 setup()")
+        # i2cset -y 1 0x70 0x21
+        os.system("{0} {1}".format(self.command, (HT16K33_SYSTEM_SETUP | HT16K33_OSCILLATOR)))
+        # i2cset -y 1 0x70 0x81
+        os.system("{0} {1}".format(self.command, (HT16K33_BLINK_CMD | blink | HT16K33_BLINK_DISPLAYON)))
+        # i2cset -y 1 0x70 0xEF
+        os.system("{0} {1}".format(self.command, (HT16K33_BRIGHTNESS_CMD | brightness)))
 
     # End def    
 
@@ -218,59 +217,44 @@ class HT16K33():
 
     def set_digit(self, digit_number, data, double_point=False):
         """Update the given digit of the display."""
-        if self.command:
-            os.system("{0} {1} {2}".format(self.command, DIGIT_ADDR[digit_number], self.encode(data, double_point)))    
-        else:
-            print("HT16K33 set_digit() = {0}".format(self.encode(data, double_point)))
+        os.system("{0} {1} {2}".format(self.command, DIGIT_ADDR[digit_number], self.encode(data, double_point)))    
 
     # End def
 
 
     def set_digit_raw(self, digit_number, data, double_point=False):
         """Update the given digit of the display using raw data value"""
-        if self.command:
-            os.system("{0} {1} {2}".format(self.command, DIGIT_ADDR[digit_number], data))
-        else:
-            print("HT16K33 set_digit_raw() = 0x{0:x}".format(data))
+        os.system("{0} {1} {2}".format(self.command, DIGIT_ADDR[digit_number], data))    
 
     # End def
 
 
     def set_colon(self, enable):
         """Set the colon on the display."""
-        if self.command:
-            if enable:
-                os.system("{0} {1} {2}".format(self.command, COLON_ADDR, 0x02))
-            else:
-                os.system("{0} {1} {2}".format(self.command, COLON_ADDR, 0x00))
+        if enable:
+            os.system("{0} {1} {2}".format(self.command, COLON_ADDR, 0x02))
         else:
-            print("HT16K33 set_colon() = {0}".format(enable))
+            os.system("{0} {1} {2}".format(self.command, COLON_ADDR, 0x00))
 
     # End def        
 
 
     def blank(self):
         """Clear the display to read nothing"""
-        if self.command:
-            self.set_colon(False)
+        self.set_colon(False)
 
-            self.set_digit_raw(3, 0x00)
-            self.set_digit_raw(2, 0x00)
-            self.set_digit_raw(1, 0x00)
-            self.set_digit_raw(0, 0x00)
-        else:
-            print("HT16K33 blank()")
+        self.set_digit_raw(3, 0x00)
+        self.set_digit_raw(2, 0x00)
+        self.set_digit_raw(1, 0x00)
+        self.set_digit_raw(0, 0x00)
 
     # End def
 
 
     def clear(self):
         """Clear the display to read '0000'"""
-        if self.command:
-            self.set_colon(False)
-            self.update(0)
-        else:
-            print("HT16K33 clear()")        
+        self.set_colon(False)
+        self.update(0)
 
     # End def
 
@@ -284,9 +268,13 @@ class HT16K33():
         
         Will throw a ValueError if number is not between 0 and 9999.
         """
-
-        # Modify code to implement this function
-        print("Set value = {0}".format(value)) # Remove when updating code
+        if ((value < 0) or (value > 9999)):
+            raise ValueError("Value is not between 0 and 9999")
+        
+        self.set_digit(3, (value % 10))
+        self.set_digit(2, (value // 10) % 10)
+        self.set_digit(1, (value // 100) % 10)
+        self.set_digit(0, (value // 1000) % 10)
 
     # End def
     
@@ -307,11 +295,8 @@ class HT16K33():
         # Set the display to the correct characters        
         for i, char in enumerate(value):
             try:
-                # Translate the character into the value needed for hex display
-                
-                # Set the display digit with the character value
-                print("Set char  = {0}".format(char)) # Remove when updating code
-                
+                char_value = LETTERS[char]
+                self.set_digit_raw(i, char_value)
             except:
                 raise ValueError("Character {0} not supported".format(char))
 

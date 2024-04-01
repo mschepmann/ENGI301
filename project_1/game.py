@@ -143,13 +143,14 @@ class GameCode():
         """ Turn on the correct LED given when an answer is submitted, then
         turn the LED off after a time interval of 1.5 seconds
         """
-        if self.correct_answer():
+        if self.correct_answer:
             # Checks if the correct answer has been given, and turns on the
             # green LED if it is
-            self.green_led.on(1.5) # Is this a time that the LED will be on
-            time.sleep()
+            self.green_led.on() # Is this a time that the LED will be on
+            time.sleep(1.5)
+            self.green_led.off()
             
-        if self.incorrect_answer():
+        if self.incorrect_answer:
             # Checks if the incorrect answer has been given, and turns on the
             # red LED if it is
             self.red_led.on(1.5)

@@ -74,7 +74,7 @@ import led as LED
 import buzzer as BUZZER
 import potentiometer as POT
 import word_to_morse as MORSE
-# import spi_screen as SPI
+import spi_screen as SPI
 # import (joystick API) as JOYSTICK
 
 # ------------------------------------------------------------------------
@@ -129,15 +129,47 @@ class GameCode():
         self.red_led        = LED.LED(red_led)
         self.green_led      = LED.LED(green_led)
         self.buzzer         = BUZZER.PWM.stop
-        self.spi            = 
+        self.spi            = SPI.blank()
         self.display        = HT16K33.HT16K33(i2c_bus, i2c_address)
         self.potentiometer  = POT.Potentiometer(potentiometer)
         self._setup()
         
     def _setup(self):
         """ Initialize the hardware components."""
+        spi.blank()
+        
+        time.sleep(5)
         #Turn on the SPI
         
+    def initial_spi(self):
+        """ Starts the interface between the player and the game, describing
+        what the objective is for the player and prompting a difficulty 
+        choice"""
+        self.spi.text("welcome to morse code decode", fontsize=24, 
+        fontcolor=(255,255,255), backgroundcolor=(0,0,0), justify=CENTER, 
+        align=TOP, rotation=90)
+        
+        time.sleep(3)
+        
+        self.spi.blank()
+        
+        time.sleep(1)
+        
+        self.spi.text("this device is a bomb", fontsize=24, 
+        fontcolor=(255,255,255), backgroundcolor=(0,0,0), justify=CENTER, 
+        align=TOP, rotation=90)
+        
+        self.spi.text("your job is to defuse it", fontsize=24, 
+        fontcolor=(255,255,255), backgroundcolor=(0,0,0), justify=CENTER, 
+        align=CENTER, rotation=90)
+        
+        self.spi.text("choose your difficulty level", fontsize=24, 
+        fontcolor=(255,255,255), backgroundcolor=(0,0,0), justify=CENTER, 
+        align=BOTTOM, rotation=90)
+        
+        time.sleep(5)
+        
+        self.spi.blank()
        
     def LEDs(self):
         """ Turn on the correct LED given when an answer is submitted, then
@@ -216,6 +248,14 @@ class Joystick():
     
     
 
-
+        
+        self.spi.text("easy", fontsize=24, fontcolor=(255,255,255), 
+        backgroundcolor=(0,0,0), justify=CENTER, align=TOP, rotation=90)
+        
+        self.spi.text("medium", fontsize=24, fontcolor=(255,255,255), 
+        backgroundcolor=(0,0,0), justify=CENTER, align=CENTER, rotation=90)
+        
+        self.spi.text("hard", fontsize=24, fontcolor=(255,255,255), 
+        backgroundcolor=(0,0,0), justify=CENTER, align=BOTTOM, rotation=90)
         
     

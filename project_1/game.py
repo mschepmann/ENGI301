@@ -76,6 +76,7 @@ import potentiometer as POT
 import word_to_morse as MORSE
 import spi_screen as SPI
 import threading
+import random as rand
 # import (joystick API) as JOYSTICK
 
 # ------------------------------------------------------------------------
@@ -183,11 +184,11 @@ class GameCode():
         arrays"""
         
         if level == "easy":
-            word = random.choice(easy_words)
+            word = rand.choice(easy_words)
         elif level == "medium":
-            word = random.choice(medium_words)
+            word = rand.choice(medium_words)
         elif level == "hard":
-            word = random.choice(hard_words)
+            word = rand.choice(hard_words)
        
     def LEDs(self):
         """ Turn on the correct LED given when an answer is submitted, then

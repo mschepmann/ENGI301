@@ -75,6 +75,7 @@ import buzzer as BUZZER
 import potentiometer as POT
 import word_to_morse as MORSE
 import spi_screen as SPI
+import threading
 # import (joystick API) as JOYSTICK
 
 # ------------------------------------------------------------------------
@@ -136,6 +137,7 @@ class GameCode():
         
     def _setup(self):
         """ Initialize the hardware components."""
+        
         spi.blank()
         
         time.sleep(5)
@@ -145,6 +147,7 @@ class GameCode():
         """ Starts the interface between the player and the game, describing
         what the objective is for the player and prompting a difficulty 
         choice"""
+        
         self.spi.text("welcome to morse code decode", fontsize=24, 
         fontcolor=(255,255,255), backgroundcolor=(0,0,0), justify=CENTER, 
         align=TOP, rotation=90)
@@ -170,6 +173,21 @@ class GameCode():
         time.sleep(5)
         
         self.spi.blank()
+        
+        # IMPLEMENT LEVEL SELECTION AS VARIABLE NAME "LEVEL"
+        
+        
+    def levelselect_wordchoice(self):
+        """ This function takes an input from the user about the desired 
+        difficulty and then randomly picks a word from the potential word
+        arrays"""
+        
+        if level == "easy":
+            word = random.choice(easy_words)
+        elif level == "medium":
+            word = random.choice(medium_words)
+        elif level == "hard":
+            word = random.choice(hard_words)
        
     def LEDs(self):
         """ Turn on the correct LED given when an answer is submitted, then

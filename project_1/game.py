@@ -203,9 +203,9 @@ class GameCode():
         if self.incorrect_answer:
             # Checks if the incorrect answer has been given, and turns on the
             # red LED if it is
-            self.red_led.on(1.5)
-            time.sleep()
-        
+            self.red_led.on()
+            time.sleep(1.5)
+            self.red_led.off()
         # End def
 
 class Joystick():

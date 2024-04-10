@@ -67,8 +67,6 @@ Uses:
 """
 
 import time
-from gpiozero import MCP3008, DigitalInputDevice
-import numpy as np
 import ht16k33 as HT16K33
 import led as LED
 import buzzer as BUZZER
@@ -77,6 +75,7 @@ import word_to_morse as MORSE
 import spi_screen as SPI
 import threading
 import random as rand
+import Adafruit_BBIO.ADC as ADC
 # import (joystick API) as JOYSTICK
 
 # ------------------------------------------------------------------------
@@ -124,20 +123,23 @@ class GameCode(threading.Thread):
     potentiometer = None
     
     def __init__(self, red_led = "P2_4", green_led = "P2_6"
-                       buzzer = "P2_1", spi = "", 
-                       potentiometer = "P1_19", 
-                       i2c_bus=1, i2c_address=0x70):
+                       buzzer = "P2_1", spi = "", potentiometer = "P1_19",
+                       xjoy = " ", yjoy = " ", butjoy = " ", i2c_bus=1, 
+                       i2c_address=0x70):
                        
-        self.red_led        = LED.LED(red_led)
-        self.green_led      = LED.LED(green_led)
-        self.buzzer         = BUZZER.PWM.stop
-        self.spi            = SPI.blank()
-        self.display        = HT16K33.HT16K33(i2c_bus, i2c_address)
-        self.potentiometer  = POT.Potentiometer(potentiometer)
+        self.red_led         = LED.LED(red_led)
+        self.green_led       = LED.LED(green_led)
+        self.buzzer          = BUZZER.PWM.stop
+        self.spi             = SPI.blank()
+        self.display         = HT16K33.HT16K33(i2c_bus, i2c_address)
+        self.potentiometer   = POT.Potentiometer(potentiometer)
         self._setup()
-        
+        self.unpressed_value = HIGH
+        self.pressed_value   = LOW
     def _setup(self):
         """ Initialize the hardware components."""
+        
+        ADC.setup()
         
         spi.blank()
         
@@ -209,59 +211,15 @@ class GameCode(threading.Thread):
             self.red_led.off()
         # End def
 
-class Joystick():
-# Code from Things DAQ 
-# (https://thingsdaq.org/2022/11/24/joystick-with-raspberry-pi/)
-
-# REPLACE THE PINS!!!
-    
-    # Creating objects for the joystick outputs
-    joyLR = MCP3008(channel=0, clock_pin=11, mosi_pin=10, miso_pin=9, 
-    select_pin=8)
-    joyFB = MCP3008(channel=1, clock_pin=11, mosi_pin=10, miso_pin=9, 
-    select_pin=8)
-    joyB = DigitalInputDevice(18)
-    
-    # Assigning some parameters
-    tsample = 0.02  # Sampling period for code execution (s)
-    tdisp = 0.5  # Output display period (s)
-    tstop = 30  # Total execution time (s)
-    vref = 3.3  # Reference voltage for MCP3008
-    
-    # Initializing variables and starting main clock
-    tprev = 0
-    tcurr = 0
-    tstart = time.perf_counter()
-    # Running execution loop
-    print('Running code for', tstop, 'seconds ...')
-    
-    while tcurr <= tstop:
-        # Getting current time (s)
-        tcurr = time.perf_counter() - tstart
-        # Doing I/O and computations every `tsample` seconds
-        if (np.floor(tcurr/tsample) - np.floor(tprev/tsample)) == 1:
-            # Getting joy stick normalized voltage output
-            valLRcurr = joyLR.value
-            valFBcurr = joyFB.value
-            # Calculating current time raw voltages
-            vLRcurr = vref*valLRcurr
-            vFBcurr = vref*valFBcurr
-            # Getting the Z axis state
-            Bcurr = joyB.value
-            # Displaying output voltages every `tdisp` seconds
-            if (np.floor(tcurr/tdisp) - np.floor(tprev/tdisp)) == 1:
-                print("X = {:0.2f} V , Y = {:0.2f} V , B = {:d}".
-                format(vLRcurr, vFBcurr, Bcurr))
-        # Updating previous time value
-        tprev = tcurr
-    
-    print('Done.')
-    # Releasing pins
-    joyLR.close()
-    joyFB.close()
-    joyB.close()
+    def stickjoy(self):
+        """ Set the up/down, left/right, and push button thresholds on the
+        joystick"""
         
-            
+        xval=int(ADC.read(self.xjoy))
+        yval=int(ADC.read(self.yjoy))
+        # self.butjoy=butjoy
+        
+        
             
         
     

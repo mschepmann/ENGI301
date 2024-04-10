@@ -115,7 +115,7 @@ alpha_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
 # Functions / Classes
 # ------------------------------------------------------------------------
 
-class GameCode():
+class GameCode(threading.Thread):
     red_led = None
     green_led = None
     spi = None
@@ -178,7 +178,7 @@ class GameCode():
         # IMPLEMENT LEVEL SELECTION AS VARIABLE NAME "LEVEL"
         
         
-    def levelselect_wordchoice(self):
+    def level_select_wordchoice(self):
         """ This function takes an input from the user about the desired 
         difficulty and then randomly picks a word from the potential word
         arrays"""

@@ -77,7 +77,6 @@ import threading
 import random as rand
 import Adafruit_BBIO.ADC as ADC
 import button as BUTTON
-# import (joystick API) as JOYSTICK
 
 # ------------------------------------------------------------------------
 # Constants

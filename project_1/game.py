@@ -3,7 +3,7 @@
 Morse Code Decode Game
 --------------------------------------------------------------------------
 License:   
-Copyright 2022 Erik Welsh
+Copyright 2024 Mina Schepmann
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:
@@ -77,7 +77,6 @@ import threading
 import random as rand
 import Adafruit_BBIO.ADC as ADC
 import button as BUTTON
-import simpleaudio as sa
 # import (joystick API) as JOYSTICK
 
 # ------------------------------------------------------------------------
@@ -111,9 +110,7 @@ lowxval = 315
 highyval = 700
 lowyval = 315
 
-dat_sound = sa.WaveObject.from_wave_file("dat.wav")
-dit_sound = sa.WaveObject.from_wave_file("dit.wav")
-space_sound = sa.WaveObject.from_wave_file("space.wav")
+frequency = #SET THIS HAHAHHA
 # ------------------------------------------------------------------------
 # Global variables
 # ------------------------------------------------------------------------
@@ -191,8 +188,7 @@ class GameCode(threading.Thread):
         self.spi.blank()
         
         # IMPLEMENT LEVEL SELECTION AS VARIABLE NAME "LEVEL"
-        
-        
+            
     def level_select_word_choice(self):
         """ This function takes an input from the user about the desired 
         difficulty and then randomly picks a word from the potential word
@@ -204,6 +200,8 @@ class GameCode(threading.Thread):
             word = rand.choice(medium_words)
         elif level == "hard":
             word = rand.choice(hard_words)
+            
+    
        
     def morseword(self):
         """ This function converts the chosen word from the random generator
@@ -217,6 +215,14 @@ class GameCode(threading.Thread):
         been submitted; if it has, the buzzer will stop making sounds, if the
         incorrect answer is given, then it will play a custom sound and then 
         resume the dot and dash sounds."""
+        
+        for i in morse:
+            if i == '-':
+                play(self, frequency, length=0.5, stop=False)
+            if i == '.':
+                play(self, frequency, length=1.5, stop=False)
+            if i == ' ':
+                play(self, frequency, length=2.5, stop=False)
         
     
     def LEDs(self):
@@ -250,7 +256,7 @@ class GameCode(threading.Thread):
     
 
     def run(self):
-        
+        ###
         
         self.spi.text("easy", fontsize=24, fontcolor=(255,255,255), 
         backgroundcolor=(0,0,0), justify=CENTER, align=TOP, rotation=90)

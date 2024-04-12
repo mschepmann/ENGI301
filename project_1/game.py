@@ -76,6 +76,8 @@ import spi_screen as SPI
 import threading
 import random as rand
 import Adafruit_BBIO.ADC as ADC
+import button as BUTTON
+import simpleaudio as sa
 # import (joystick API) as JOYSTICK
 
 # ------------------------------------------------------------------------
@@ -104,6 +106,14 @@ alpha_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
               'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
               '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ']
 
+highxval = 700
+lowxval = 315
+highyval = 700
+lowyval = 315
+
+dat_sound = sa.WaveObject.from_wave_file("dat.wav")
+dit_sound = sa.WaveObject.from_wave_file("dit.wav")
+space_sound = sa.WaveObject.from_wave_file("space.wav")
 # ------------------------------------------------------------------------
 # Global variables
 # ------------------------------------------------------------------------
@@ -126,16 +136,19 @@ class GameCode(threading.Thread):
                        buzzer = "P2_1", spi = "", potentiometer = "P1_19",
                        xjoy = " ", yjoy = " ", butjoy = " ", i2c_bus=1, 
                        i2c_address=0x70):
-                       
+       
+        self._setup()               
         self.red_led         = LED.LED(red_led)
         self.green_led       = LED.LED(green_led)
         self.buzzer          = BUZZER.PWM.stop
         self.spi             = SPI.blank()
         self.display         = HT16K33.HT16K33(i2c_bus, i2c_address)
         self.potentiometer   = POT.Potentiometer(potentiometer)
-        self._setup()
-        self.unpressed_value = HIGH
-        self.pressed_value   = LOW
+        self.xjoy            = xjoy()
+        self.yjoy            = yjoy()
+        self.butjoy          = BUTTON.Button(butjoy)
+        # self.unpressed_value = HIGH
+        # self.pressed_value   = LOW
     def _setup(self):
         """ Initialize the hardware components."""
         
@@ -180,7 +193,7 @@ class GameCode(threading.Thread):
         # IMPLEMENT LEVEL SELECTION AS VARIABLE NAME "LEVEL"
         
         
-    def level_select_wordchoice(self):
+    def level_select_word_choice(self):
         """ This function takes an input from the user about the desired 
         difficulty and then randomly picks a word from the potential word
         arrays"""
@@ -192,6 +205,20 @@ class GameCode(threading.Thread):
         elif level == "hard":
             word = rand.choice(hard_words)
        
+    def morseword(self):
+        """ This function converts the chosen word from the random generator
+        from the array of given words from the list"""
+        
+        alpha_to_morse(word)
+        
+    def buzzer_play_morse(self):
+        """ This function will play the morse code on the buzzer as dot and 
+        dash sounds. It will also check continuously if the correct answer has
+        been submitted; if it has, the buzzer will stop making sounds, if the
+        incorrect answer is given, then it will play a custom sound and then 
+        resume the dot and dash sounds."""
+        
+    
     def LEDs(self):
         """ Turn on the correct LED given when an answer is submitted, then
         turn the LED off after a time interval of 1.5 seconds
@@ -214,17 +241,16 @@ class GameCode(threading.Thread):
     def stickjoy(self):
         """ Set the up/down, left/right, and push button thresholds on the
         joystick"""
-        
         xval=int(ADC.read(self.xjoy))
         yval=int(ADC.read(self.yjoy))
-        # self.butjoy=butjoy
         
-        
-            
-        
+        # if xval > xvalhigh:
+            # spi_screen_right()
     
     
 
+    def run(self):
+        
         
         self.spi.text("easy", fontsize=24, fontcolor=(255,255,255), 
         backgroundcolor=(0,0,0), justify=CENTER, align=TOP, rotation=90)

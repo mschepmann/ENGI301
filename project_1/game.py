@@ -187,6 +187,14 @@ class GameCode(threading.Thread):
         self.spi.blank()
         
         # IMPLEMENT LEVEL SELECTION AS VARIABLE NAME "LEVEL"
+        
+    def spi_level_select(self):
+        """ This function displays the options for the level selection screen"""
+        
+        level = []
+        
+        self.spi.text("easy", fontsize=24, fontcolor=(255,255,255), 
+        backgroundcolor=(0,0,0), justify=CENTER, align=BOTTOM, rotation=90))
             
     def level_select_word_choice(self):
         """ This function takes an input from the user about the desired 
@@ -200,7 +208,6 @@ class GameCode(threading.Thread):
         elif level == "hard":
             word = rand.choice(hard_words)
             
-    
        
     def morseword(self):
         """ This function converts the chosen word from the random generator
@@ -215,14 +222,21 @@ class GameCode(threading.Thread):
         incorrect answer is given, then it will play a custom sound and then 
         resume the dot and dash sounds."""
         
-        for i in morse:
-            if i == '-':
-                play(self, frequency, length=0.5, stop=False)
-            if i == '.':
-                play(self, frequency, length=1.5, stop=False)
-            if i == ' ':
-                play(self, frequency, length=2.5, stop=False)
-        
+        while #####:
+            for i in morse:
+                if i == '-':
+                    self.buzzer.play(self, frequency, length=0.5, stop=False)
+                if i == '.':
+                    self.buzzer.play(self, frequency, length=1.5, stop=False)
+                if i == ' ':
+                    self.buzzer.(self, frequency, length=2.5, stop=False)
+                
+                
+    def buzzer_play_wrong(self):
+        """ This function sets the buzzer to play a drone sound"""
+        frequency = ##
+        self.buzzer.play(self, frequency, length=3, stop=False)
+        self.buzzer.stop()
     
     def LEDs(self):
         """ Turn on the correct LED given when an answer is submitted, then

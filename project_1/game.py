@@ -191,21 +191,29 @@ class GameCode(threading.Thread):
     def spi_level_select(self):
         """ This function displays the options for the level selection screen"""
         
-        level = []
+        ###
         
-        self.spi.text("easy", fontsize=24, fontcolor=(255,255,255), 
-        backgroundcolor=(0,0,0), justify=CENTER, align=BOTTOM, rotation=90))
+        level = [easy,medium,hard]
+        
+        easy = self.spi.text("easy", fontsize=24, fontcolor=(255,255,255), 
+        backgroundcolor=(0,0,0), justify=CENTER, align=TOP, rotation=90)
+        
+        medium = self.spi.text("medium", fontsize=24, fontcolor=(255,255,255), 
+        backgroundcolor=(0,0,0), justify=CENTER, align=CENTER, rotation=90)
+        
+        hard = self.spi.text("hard", fontsize=24, fontcolor=(255,255,255), 
+        backgroundcolor=(0,0,0), justify=CENTER, align=BOTTOM, rotation=90)
             
     def level_select_word_choice(self):
         """ This function takes an input from the user about the desired 
         difficulty and then randomly picks a word from the potential word
         arrays"""
         
-        if level == "easy":
+        if level == easy:
             word = rand.choice(easy_words)
-        elif level == "medium":
+        elif level == medium:
             word = rand.choice(medium_words)
-        elif level == "hard":
+        elif level == hard:
             word = rand.choice(hard_words)
             
        
@@ -222,14 +230,13 @@ class GameCode(threading.Thread):
         incorrect answer is given, then it will play a custom sound and then 
         resume the dot and dash sounds."""
         
-        while #####:
-            for i in morse:
-                if i == '-':
-                    self.buzzer.play(self, frequency, length=0.5, stop=False)
-                if i == '.':
-                    self.buzzer.play(self, frequency, length=1.5, stop=False)
-                if i == ' ':
-                    self.buzzer.(self, frequency, length=2.5, stop=False)
+        for i in morse:
+            if i == '-':
+                self.buzzer.play(self, frequency, length=0.5, stop=False)
+            if i == '.':
+                self.buzzer.play(self, frequency, length=1.5, stop=False)
+            if i == ' ':
+                self.buzzer.(self, frequency, length=2.5, stop=False)
                 
                 
     def buzzer_play_wrong(self):
@@ -260,24 +267,26 @@ class GameCode(threading.Thread):
     def stickjoy(self):
         """ Set the up/down, left/right, and push button thresholds on the
         joystick"""
-        xval=int(ADC.read(self.xjoy))
-        yval=int(ADC.read(self.yjoy))
+        xval=int(ADC.read(self.xjoy)) # Defines the x-resistance as an integer
+        yval=int(ADC.read(self.yjoy)) # Defines the y-resistance as an integer
         
         # if xval > xvalhigh:
             # spi_screen_right()
-    
-    # hehehaha
 
     def run(self):
-        ###
+        """ Run the actual program and have the game genuinely work and run
+        properly"""
         
-        self.spi.text("easy", fontsize=24, fontcolor=(255,255,255), 
-        backgroundcolor=(0,0,0), justify=CENTER, align=TOP, rotation=90)
+        self.setup()
+        self.initial_spi()
         
-        self.spi.text("medium", fontsize=24, fontcolor=(255,255,255), 
-        backgroundcolor=(0,0,0), justify=CENTER, align=CENTER, rotation=90)
+        time.sleep(1)
         
-        self.spi.text("hard", fontsize=24, fontcolor=(255,255,255), 
-        backgroundcolor=(0,0,0), justify=CENTER, align=BOTTOM, rotation=90)
+        while(1):
+            
+            if self.stickjoy.xval > xvalhigh:
+                level=level(i+1)
+        
+        
         
     

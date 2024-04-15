@@ -126,12 +126,10 @@ class GameCode(threading.Thread):
     spi = None
     buzzer = None
     display = None
-    potentiometer = None
     
     def __init__(self, red_led = "P2_4", green_led = "P2_6"
-                       buzzer = "P2_1", spi = "", potentiometer = "P1_19",
-                       xjoy = " ", yjoy = " ", butjoy = " ", i2c_bus=1, 
-                       i2c_address=0x70):
+                       buzzer = "P2_1", spi = "", xjoy = " ", yjoy = " ", 
+                       butjoy = " ", i2c_bus=1, i2c_address=0x70):
        
         self._setup()               
         self.red_led         = LED.LED(red_led)
@@ -139,7 +137,6 @@ class GameCode(threading.Thread):
         self.buzzer          = BUZZER.PWM.stop
         self.spi             = SPI.blank()
         self.display         = HT16K33.HT16K33(i2c_bus, i2c_address)
-        self.potentiometer   = POT.Potentiometer(potentiometer)
         self.xjoy            = xjoy()
         self.yjoy            = yjoy()
         self.butjoy          = BUTTON.Button(butjoy)
@@ -272,6 +269,12 @@ class GameCode(threading.Thread):
         
         # if xval > xvalhigh:
             # spi_screen_right()
+            
+    def segment_display(self):
+        """This is the function for the seven-segment display which will have a
+        countdown function"""
+        
+        
 
     def run(self):
         """ Run the actual program and have the game genuinely work and run

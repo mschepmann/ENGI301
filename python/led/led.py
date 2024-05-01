@@ -162,7 +162,7 @@ if __name__ == '__main__':
     print("LED Test")
 
     # Create instantiation of the LED
-    led = LED("P2_6")
+    led = LED("P2_4")
     
     # Use a Keyboard Interrupt (i.e. "Ctrl-C") to exit the test
     print("Use Ctrl-C to Exit")

@@ -1,6 +1,6 @@
 #!/bin/bash
 # --------------------------------------------------------------------------
-# Morse Decode Game - Run Script
+# Combination Lock - Configure Pins
 # --------------------------------------------------------------------------
 # License:   
 # Copyright 2024 Mina Schepmann
@@ -31,22 +31,35 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # --------------------------------------------------------------------------
 # 
-# Run Combination Lock in /var/lib/cloud9/ENGI301/project_1/game
+# Configure pins for Combination Lock:
+#   - I2C1
+#   - Joystick
+#   - LEDs (Red / Green)
+#   - Buzzer
+#   - SPI Screen
 # 
 # --------------------------------------------------------------------------
 
-cd /var/lib/cloud9/ENGI301/project_1/game
+# I2C1
+config-pin P2_09 i2c
+config-pin P2_11 i2c
 
-./configure_pins.sh
+# LEDs
+config-pin P2_04 gpio
+config-pin P2_06 gpio
 
-dirs=(
-    '/var/lib/cloud9/ENGI301/python/ht16k33:'
-    '/var/lib/cloud9/ENGI301/python/button:'
-    '/var/lib/cloud9/ENGI301/python/led:'
-    '/var/lib/cloud9/ENGI301/python/potentiometer:'
-    '/var/lib/cloud9/ENGI301/python/buzzer:'
-    '/var/lib/cloud9/ENGI301/python/button:'
-    '/var/lib/cloud9/ENGI301/python/SPI:'
-)
+# SPI
+config-pin P1_06 gpio
+config-pin P1_04 gpio
+config-pin P1_02 gpio
+config-pin P1_10 miso
+config-pin P1_12 mosi
+config-pin P1_08 clk
 
-PYTHONPATH=$(IFS=; echo "${dirs[*]}") python3 game.py
+# Buzzer
+config-pin P2_01 pwm
+
+# Joystick
+config-pin P2_19 gpio
+config-pin P1_19 pwm
+config-pin P1_21 pwm
